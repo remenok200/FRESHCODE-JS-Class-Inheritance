@@ -13,7 +13,7 @@ class Dog {
     if (typeof newNickname !== "string") {
       throw new TypeError("The nickname should be a string!");
     }
-    if (newNickname.trim === "") {
+    if (newNickname.trim() === "") {
       throw new Error("Nickname must be not empty!");
     }
     this._nickname = newNickname;
@@ -23,7 +23,7 @@ class Dog {
     if (typeof newBreed !== "string") {
       throw new TypeError("The breed should be a string!");
     }
-    if (newBreed.trim === "") {
+    if (newBreed.trim() === "") {
       throw new Error("Breed must be not empty!");
     }
     this._breed = newBreed;
@@ -33,7 +33,10 @@ class Dog {
     if (typeof newNumberOfCapturedCats !== "number") {
       throw new TypeError("The number of captured cats should be a number!");
     }
-    if (newNumberOfCapturedCats === "") {
+    if (
+      Number.isNaN(this.numberOfCapturedCats) === true ||
+      this.numberOfCapturedCats < 0
+    ) {
       throw new Error("Number of captured cats must be not empty!");
     }
     this._numberOfCapturedCats = newNumberOfCapturedCats;
@@ -78,39 +81,44 @@ class Dog {
 }
 
 class StrayDog extends Dog {
-  constructor(nickname, numberOfCapturedCats, EatenCats = 0) {
+  constructor(nickname, numberOfCapturedCats, eatenCats = 0) {
     super(nickname, "stray", numberOfCapturedCats);
-    this.EatenCats = EatenCats;
+    this.eatenCats = eatenCats;
     this.successChance = Math.random() * (1 - 0.5) + 0.5; // [0.5; 1)
   }
 
   // ------> setters section
-  set EatenCats(newEatenCats) {
+  set eatenCats(newEatenCats) {
     if (typeof newEatenCats !== "number") {
       throw new TypeError("The number of eaten cats should be a number!");
     }
-    if (newEatenCats === "") {
+    if (Number.isNaN(this.eatenCats) === true || this.eatenCats < 0) {
       throw new Error("Number of eaten cats must be not empty!");
     }
-    this._EatenCats = newEatenCats;
+    if (newEatenCats > this.numberOfCapturedCats) {
+      throw new RangeError(
+        "Дорогой, а это уже читерство! Хочешь пожрать - дуй на охоту!"
+      );
+    }
+    this._eatenCats = newEatenCats;
   }
   // <------ setters section
 
   // ------> getters section
-  get EatenCats() {
-    return this._EatenCats;
+  get eatenCats() {
+    return this._eatenCats;
   }
   // <------ getters section
 
   // ------> methods section
   eat() {
-    if (this.numberOfCapturedCats > this.EatenCats) {
-      this.EatenCats++;
+    if (this.numberOfCapturedCats > this.eatenCats) {
+      this.eatenCats++;
       return `Пес ${this.nickname} пожрал! У него осталось ${
-        this.numberOfCapturedCats - this.EatenCats
+        this.numberOfCapturedCats - this.eatenCats
       } котов доступных для съедения!`;
     }
-    return `Нечего есть! Иди на охоту и налови котов! Количество словленных котов: ${this.numberOfCapturedCats}, количество сохжранных котов: ${this.EatenCats}`;
+    return `Нечего есть! Иди на охоту и налови котов! Количество словленных котов: ${this.numberOfCapturedCats}, количество сохжранных котов: ${this.eatenCats}`;
   }
   // <------ methods section
 }

@@ -1,6 +1,6 @@
 "use strict";
 
-const Tyzik = new StrayDog("Tyzik");
+const Tyzik = new StrayDog("Tyzik", 2, 1);
 console.log(Tyzik);
 console.log(Tyzik.sleep());
 console.log(Tyzik.barking());
